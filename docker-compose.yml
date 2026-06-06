@@ -9,7 +9,7 @@
 # All VPN-protected services (qBittorrent, Prowlarr, FlareSolverr) run
 # through Gluetun. If the VPN drops, traffic stops. Zero leaks.
 #
-# Radarr, Sonarr, Lidarr, Bazarr, Jellyfin, and Seerr do NOT run through
+# Radarr, Sonarr, Lidarr, Bazarr, Plex, and Seerr do NOT run through
 # the VPN — they need direct network access for speed and local connectivity.
 
 networks:
@@ -246,23 +246,23 @@ services:
     restart: unless-stopped
 
   # ============================================================
-  # JELLYFIN — Media Server (NOT behind VPN)
+  # PLEX — Media Server (NOT behind VPN)
   # Your personal streaming service. Plays movies, TV, music.
   # Needs full bandwidth — never put this behind the VPN.
   # ============================================================
-  jellyfin:
-    image: lscr.io/linuxserver/jellyfin:latest
-    container_name: jellyfin
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - UMASK=002
       - TZ=${TZ}
     volumes:
-      - ./jellyfin:/config
+      - ./plex:/config
       - /data/media:/data/media
     ports:
-      - 8096:8096
+      - 32400:32400
     # Uncomment the lines below to enable hardware transcoding (Intel Quick Sync / VAAPI).
     # Only works if your system has Intel/AMD integrated graphics (/dev/dri must exist).
     # If you get an error about /dev/dri not found, leave these commented out.
@@ -270,7 +270,7 @@ services:
     #   - /dev/dri:/dev/dri
     networks:
       arrnetwork:
-        ipv4_address: ${IP_JELLYFIN}
+        ipv4_address: ${IP_PLEX}
     restart: unless-stopped
 
   # ============================================================
